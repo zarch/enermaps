@@ -43,16 +43,16 @@ def calculate(geojson, raster_path, rasterclass):
     pixelSizeY =-gt[4]
 
     area = np.sum(raster == rasterclass)*pixelSizeX*pixelSizeY
-    stat = [np.round(area/1e+6,2), #area
-            np.round((area/projected_shape.area)*100,2) #percentage
-        ]
+    stat = {"area":np.round(area/1e+6,2), # area within the shape
+            "percentage":np.round((area/projected_shape.area)*100,2) #percentage of the clipping shape
+        }
     stat_done = time()
     ret = dict()
-    ret["graphs"] = []
-    ret["geofiles"] = []
+    ret["graphs"] = {}
+    ret["geofiles"] = {}
     ret["values"] = stat
 
-    logging.info("We took {!s} to calculate the area".format(stat_done - start))
-
+    logging.info("It took {!s} to calculate the area".format(stat_done - start))
+    logging.info(stat)
     validate(ret)
     return ret

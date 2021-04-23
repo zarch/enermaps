@@ -25,7 +25,7 @@ class TestCM(unittest.TestCase):
         raster = get_testdata_path("esm.tif")
         res = calculate(selection, raster, rasterclass)
         self.assertAlmostEqual(
-            res["values"][0],
+            res["values"]["area"],
             0.02,
             places=4,)
 
