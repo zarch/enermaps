@@ -70,6 +70,14 @@ services:
     env_file:
       .env
 
+  postgrest:
+    build:
+      context: ./postgrest
+    ports:
+      - "127.0.0.1:3000:3000"
+    env_file:
+      .env
+
   redis:
     image: redis:6-alpine
     ports:
