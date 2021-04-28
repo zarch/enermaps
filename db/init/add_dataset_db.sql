@@ -58,3 +58,18 @@ ALTER TABLE data
     REFERENCES datasets(ds_id)
     ON DELETE CASCADE
 ;
+
+
+-- POSTGREST
+CREATE ROLE api_anon nologin;
+grant usage on schema public to api_anon;
+grant api_anon to test;
+
+create role api_user nologin;
+grant api_user to test;
+
+grant usage on schema public to api_user;
+grant SELECT on public.spatial to api_user;
+grant SELECT on public.data to api_user;
+grant SELECT on public.datasets to api_user;
+-- grant usage, select on sequence api.todos_id_seq to todo_user;
