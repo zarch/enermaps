@@ -24,7 +24,8 @@ RUN apt-get --yes install git
 RUN git clone https://github.com/enermaps/pandas-datapackage-reader.git
 RUN cd pandas-datapackage-reader && pip3 install -e .
 
-COPY . .
+COPY *.py .
+COPY *.csv .
 
 # Provisional command to keep the container alive
 CMD ["sleep", "infinity"]
