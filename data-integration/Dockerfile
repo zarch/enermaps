@@ -15,7 +15,7 @@ RUN apt-get update &&\
 ENV CPLUS_INCLUDE_PATH=/usr/include/gdal
 ENV C_INCLUDE_PATH=/usr/include/gdal
 
-COPY requirements.txt data-integration/requirements.txt
+COPY requirements.txt /data-integration/requirements.txt
 WORKDIR data-integration
 RUN pip3 install -r requirements.txt
 
@@ -24,8 +24,8 @@ RUN apt-get --yes install git
 RUN git clone https://github.com/enermaps/pandas-datapackage-reader.git
 RUN cd pandas-datapackage-reader && pip3 install -e .
 
-COPY admin_units.py /
-COPY *.csv /
+COPY *.py /data-integration/
+COPY *.csv /data-integration/
 
 # Provisional command to keep the container alive
 CMD ["sleep", "infinity"]
