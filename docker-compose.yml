@@ -64,7 +64,7 @@ services:
     build:
       context: ./data-integration
     volumes:
-      - data:/data
+      - data:/data-integration/data
     env_file:
       .env
 
@@ -75,6 +75,7 @@ services:
       - "0.0.0.0:80:80"
     volumes:
       - web:/web
+      - data:/web/raster
 
   postgrest:
     build:
