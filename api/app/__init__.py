@@ -7,7 +7,7 @@ import os
 from flask import Blueprint, Flask
 from flask_restx import Api
 
-from app.controllers import data_controller
+from app.controllers import selection_layers_controller
 from app.endpoints import calculation_module, geofile, wms
 from app.healthz import healthz
 from app.redirect import redirect_to_api
@@ -28,7 +28,9 @@ def create_app(environment="production", testing=False):
     app.config["WMS"]["GETMAP"]["ALLOWED_OUTPUTS"] = ["image/png", "image/jpg"]
     for k, v in app.config.items():
         app.config[k] = os.environ.get(k, v)
+
     api_bp = Blueprint("api", "api", url_prefix="/api")
+
     api = Api(api_bp)
     api.add_namespace(geofile.api)
     api.add_namespace(wms.api)
@@ -36,7 +38,9 @@ def create_app(environment="production", testing=False):
     app.register_blueprint(api_bp)
     app.register_blueprint(redirect_to_api)
     app.register_blueprint(healthz)
+
     with app.app_context():
         if not app.testing:
-            data_controller.init_datasets()
+            selection_layers_controller.init_datasets()
+            # overlay_layers = layers_controller.list_all_overlay_layers()
     return app

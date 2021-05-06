@@ -36,6 +36,21 @@
     return layer;
   }
 
+  function toOverlayLayer(layerName) {
+    const layer = L.tileLayer.wms(
+        WMS_URL,
+        {
+          transparent: 'true',
+          layers: layerName,
+          format: 'image/png',
+        },
+    );
+    return layer;
+  }
+
+  // What is the difference between a QueryableLayer, an OverlayLayer
+  // and a NutsLayer?
+
   function toNutsLayer(layerName) {
     const layer = L.tileLayer.nutsLayer(
         WMS_URL,

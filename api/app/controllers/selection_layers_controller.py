@@ -9,49 +9,6 @@ from app.models.geofile import create, list_layers
 DB_URL = "http://localhost:3000"
 
 
-def enermaps_query():
-    pass
-
-
-def get_raster_file(db_url, raster_id):
-    payload = {"id": raster_id}
-
-    try:
-        resp = requests.get(db_url, payload)
-        resp.raise_for_status()
-    except HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-    except Exception as e:
-        print(f"Other error occurred: {e}")
-
-    try:
-        # Response in bytes
-        resp.content
-    except Exception as e:
-        print("Invalid response")
-        print(f"Other error occurred: {e}")
-
-
-def get_dataset(db_url, dataset_id):
-    payload = {"id": dataset_id}
-
-    try:
-        resp = requests.get(db_url, payload)
-        resp.raise_for_status()
-    except HTTPError as http_err:
-        print(f"HTTP error occurred: {http_err}")
-    except Exception as e:
-        print(f"Other error occurred: {e}")
-
-    try:
-        # Decoded response - the encoding is guessed based
-        # on the header
-        resp.text
-    except Exception as e:
-        print("Error")
-        print(f"Other error occurred: {e}")
-
-
 def get_NUTS(db_url, nuts_id):
     """
     """
@@ -91,8 +48,9 @@ def get_LAU(db_url):
         print(f"Other error occurred: {e}")
 
 
-def init_datasets_from_db(db_url):
+def init_selection_layers(db_url):
 
+    # THESE DATASETS ARE MENDATORY
     nuts0 = get_NUTS(db_url, 0)
     nuts1 = get_NUTS(db_url, 1)
     nuts2 = get_NUTS(db_url, 2)
@@ -108,6 +66,14 @@ def init_datasets_from_db(db_url):
 
 
 def to_local_storage(resp_data, filename, content_type):
+    # content_type is used to call the right class for storage: GeoJSONLayer,
+    # VectorLayer or RasterLayer
+    # Vector layers have the extention .zip or .geojson
+
+    # Raster layers:  ["image/geotiff", "image/tiff"]
+    # Vector layers: ["application/zip"]
+    # Geojson layers (subclass of Vector layers): ["application/json",
+    #                           "application/geojson", "application/geo+json"]
     file_upload = FileStorage(resp_data, filename, content_type=content_type)
     create(file_upload)
 

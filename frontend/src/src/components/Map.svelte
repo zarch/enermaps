@@ -21,6 +21,8 @@ import TopNav from './TopNav.svelte';
 import {activeOverlayLayersStore, activeSelectionLayerStore} from '../stores.js';
 
 import {INITIAL_MAP_CENTER, INITIAL_ZOOM, BASE_LAYER_URL} from '../settings.js';
+
+// Base layer = the map
 import {BASE_LAYER_PARAMS} from '../settings.js';
 
 let map;
