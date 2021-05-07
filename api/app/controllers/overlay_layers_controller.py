@@ -74,3 +74,16 @@ def get_vector_dataset(db_url, dataset_id):
     except Exception as e:
         print("Error")
         print(f"Other error occurred: {e}")
+
+
+if __name__ == "__main__":
+    API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXBpX2Fub24ifQ.O2tOKpbfyQSMbbVfbcHg2Nz9n_WnjneLPfcqoe4FI0o"
+    resp = enermaps_query(DB_URL, 2, API_KEY)
+    print(resp)
+
+
+# r = requests.post('http://localhost:3000/rpc/enermaps_geojson',
+# 	headers={'Authorization': 'Bearer {}'.format(API_KEY)},
+# 	json={"dataset_id": 2})
+# response = r.json()
+# print(response)
