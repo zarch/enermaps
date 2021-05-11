@@ -1,36 +1,24 @@
 import io
+import json
 
 import requests
 from requests.exceptions import HTTPError
 
-# from werkzeug.datastructures import FileStorage
-
-# from app.models.geofile import create, list_layers
-
+API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXBpX3VzZXIifQ.gzl3uCe1OdCjf3feliREDJFfNkMTiDkVFcVDrCNlpBU"
 DB_URL = "http://localhost:3000"
 
 
 def list_all_overlay_layers(db_url=None):
     """ Return the names + IDs of all layers in the DB
     """
-    layers = [("heat", 1), ("wind", 2)]
-    return layers
+    # layers = [("heat", 1), ("wind", 2)]
+    pass
 
 
 def get_CM_layers(layer_ids):
     """ Get a group of layers needed by a CM
     """
     pass
-
-
-def enermaps_query(db_url, dataset_id, API_KEY):
-    r = requests.post(
-        db_url + "/rpc/enermaps_query",
-        headers={"Authorization": "Bearer {}".format(API_KEY)},
-        json={"dataset_id": dataset_id},
-    )
-    response = r.json()
-    return response
 
 
 def get_raster_dataset(db_url, raster_id):
@@ -76,14 +64,17 @@ def get_vector_dataset(db_url, dataset_id):
         print(f"Other error occurred: {e}")
 
 
+def enermaps_geojson(db_url, dataset_id, API_KEY):
+    url = db_url + "/rpc/enermaps_geojson"
+    r = requests.post(
+        url,
+        headers={"Authorization": "Bearer {}".format(API_KEY)},
+        json={"dataset_id": dataset_id},
+    )
+    return r.json()
+
+
 if __name__ == "__main__":
-    API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXBpX2Fub24ifQ.O2tOKpbfyQSMbbVfbcHg2Nz9n_WnjneLPfcqoe4FI0o"
-    resp = enermaps_query(DB_URL, 2, API_KEY)
-    print(resp)
 
-
-# r = requests.post('http://localhost:3000/rpc/enermaps_geojson',
-# 	headers={'Authorization': 'Bearer {}'.format(API_KEY)},
-# 	json={"dataset_id": 2})
-# response = r.json()
-# print(response)
+    resp = enermaps_geojson(DB_URL, 2, API_KEY)
+    print(json.dumps(resp, indent=4, sort_keys=True))
