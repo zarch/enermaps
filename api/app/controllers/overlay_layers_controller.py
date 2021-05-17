@@ -4,7 +4,7 @@ import json
 import requests
 from requests.exceptions import HTTPError
 
-API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXBpX3VzZXIifQ.gzl3uCe1OdCjf3feliREDJFfNkMTiDkVFcVDrCNlpBU"
+API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiYXBpX3VzZXIifQ.6aCpgPT-pg9KWbvKeX7hrrNPS4u7MVjcnCrHNwxfCps"
 DB_URL = "http://localhost:3000"
 
 
