@@ -28,6 +28,7 @@ def get_NUTS(db_url, nuts_id):
     except Exception as e:
         print("Invalid response")
         print(f"Other error occurred: {e}")
+    return resp
 
 
 def get_LAU(db_url):
@@ -46,6 +47,7 @@ def get_LAU(db_url):
     except Exception as e:
         print("Invalid response")
         print(f"Other error occurred: {e}")
+    return resp
 
 
 def init_selection_layers(db_url):

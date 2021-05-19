@@ -1,8 +1,20 @@
+import base64
+import inspect
 import io
 import json
+import os
+import sys
 
 import requests
 from requests.exceptions import HTTPError
+from werkzeug.datastructures import FileStorage
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0, parentdir)
+
+# from models.geofile import create
+
 
 API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYXBpX3VzZXIifQ.i34NXwqCFDV84ZKjZ0b7r4OmHOeRkONEEKARQSbNL00"
 DB_URL = "http://localhost:3000"
@@ -74,7 +86,35 @@ def enermaps_geojson(db_url, dataset_id, API_KEY):
     return r.json()
 
 
+# def fetch_dataset(base_url, get_parameters, filename, content_type):
+#     """Get a single zip dataset and import it into enermaps."""
+#     existing_layers_name = [layer.name for layer in list_layers()]
+#     if filename in existing_layers_name:
+#         print("Not fetching {}, we already have it locally".format(filename))
+#         return
+#     print("Fetching " + filename)
+#     with requests.get(base_url, params=get_parameters, stream=True) as resp:
+#         resp_data = io.BytesIO(resp.content)
+
+#     file_upload = FileStorage(resp_data, filename, content_type=content_type)
+#     create(file_upload)
+
+
 if __name__ == "__main__":
+    # setup(name='app', version='1.0', packages=find_packages())
+    # from app.models.geofile import create
 
     resp = enermaps_geojson(DB_URL, 2, API_KEY)
-    print(json.dumps(resp, indent=4, sort_keys=True))
+    # print(json.dumps(resp, indent=4, sort_keys=True))
+    resp = json.dumps(resp, indent=4, sort_keys=True)
+
+    ascii_message = resp.encode("ascii")
+    output_byte = base64.b64encode(ascii_message)
+    # print(output_byte)
+
+    # resp_data = None
+    # with enermaps_geojson(DB_URL, 2, API_KEY) as resp:
+    #     resp_data = io.BytesIO(resp.content)
+
+    file_upload = FileStorage(output_byte, "Test", content_type="application/geo+json")
+    # create(file_upload)
