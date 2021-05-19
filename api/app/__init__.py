@@ -7,9 +7,10 @@ import os
 from flask import Blueprint, Flask
 from flask_restx import Api
 
-from app.controllers import selection_layers_controller
+from app.controllers import overlay_layers_controller, selection_layers_controller
 from app.endpoints import calculation_module, geofile, wms
 from app.healthz import healthz
+from app.models.geofile import create
 from app.redirect import redirect_to_api
 
 
@@ -43,4 +44,6 @@ def create_app(environment="production", testing=False):
         if not app.testing:
             selection_layers_controller.init_datasets()
             # overlay_layers = layers_controller.list_all_overlay_layers()
+            file_upload = overlay_layers_controller.layer_from_db()
+            create(file_upload)
     return app

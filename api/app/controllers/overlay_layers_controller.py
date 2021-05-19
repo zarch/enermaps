@@ -100,6 +100,15 @@ def enermaps_geojson(db_url, dataset_id, API_KEY):
 #     create(file_upload)
 
 
+def layer_from_db():
+    resp = enermaps_geojson(DB_URL, 2, API_KEY)
+    resp = json.dumps(resp, indent=4, sort_keys=True)
+    ascii_message = resp.encode("ascii")
+    output_byte = base64.b64encode(ascii_message)
+    file_upload = FileStorage(output_byte, "Test", content_type="application/geo+json")
+    return file_upload
+
+
 if __name__ == "__main__":
     # setup(name='app', version='1.0', packages=find_packages())
     # from app.models.geofile import create
