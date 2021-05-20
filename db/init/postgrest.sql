@@ -71,22 +71,14 @@ CREATE TABLE public.datasets_full
     metadata json
 );
 GRANT SELECT ON public.datasets_full TO api_user;
-<<<<<<< HEAD
 -- Make it public to anynomous users
-=======
--- Make it public to anynomous users
->>>>>>> postgrest
 GRANT SELECT ON public.datasets_full TO api_anon;
 
 -- Example of custom function
 DROP FUNCTION IF EXISTS enermaps_get_metadata(shared_id text);
 CREATE FUNCTION enermaps_get_metadata(shared_id text)
     RETURNS TABLE(title text, url text, description text)
-<<<<<<< HEAD
     AS $$SELECT
-=======
-    AS $$SELECT
->>>>>>> postgrest
         metadata ->> 'Title (with Hyperlink)' as title,
         metadata ->> 'URLs' AS url,
         metadata ->> 'Description (in brief)' as description
