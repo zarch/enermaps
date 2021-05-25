@@ -11,6 +11,19 @@ export async function getCMs() {
   return cmsResponse.cms;
 }
 
+// Get one geofile
+export async function getGeofile(layer_id) {
+    const response = await fetch(BASE_URL + 'api/geofile/' + layer_id);
+    if (!response.ok) {
+      console.log(response);
+      //TODO return something else than a list
+      return [];
+    }
+    const layerResponse = await response.json();
+    return layerResponse;
+}
+
+// Get all stored geofiles
 export async function getGeofiles() {
   const response = await fetch(BASE_URL + 'api/geofile');
   if (!response.ok) {
