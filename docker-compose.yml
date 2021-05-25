@@ -25,7 +25,8 @@ services:
   frontend:
     build:
       context: ./frontend
-    depends_on: "api"
+    depends_on:
+      - "api"
     ports:
       - "127.0.0.1:7000:80"
     restart: always
@@ -35,7 +36,8 @@ services:
   api:
     build:
       context: ./api
-    depends_on: "db"
+    depends_on:
+      - "db"
     ports:
       - "127.0.0.1:9000:80"
     restart: always
