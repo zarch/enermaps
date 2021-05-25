@@ -1,7 +1,7 @@
 <script>
-    /*  CE SCRIPT CONTIENT EN FAIT LA SELECTION DES CALQUES QU'ON
+    /*  CE FICHIER CONTIENT EN FAIT LA SELECTION DES CALQUES QU'ON
     RAJOUTE POUR FAIRE LES CALCULS*/
-    
+
     import {onMount} from 'svelte';
     import '../leaflet_components/L.TileLayer.NutsLayer.js';
     import '../leaflet_components/L.DrawingLayer.js';
@@ -10,10 +10,14 @@
     import {getGeofiles, WMS_URL} from '../client.js';
     import {activeOverlayLayersStore} from '../stores.js';
 
+    import {OVERLAY_LAYERS} from '../settings';
+
     // List of queryable layers that are used as selection layers.
     // The order in which they appear is mirrored in the order the layers are displayed.
     let overlayLayers = [];
     let isLayerListReady = false;
+
+    let overlayLayersFromSettings = [];
 
     function toOverlayLayer(layerName) {
       const layer = L.tileLayer.wms(
@@ -45,6 +49,7 @@
       setSelectionFromGetParameter();
       isLayerListReady = true;
     });
+
     function setSelectionFromGetParameter() {
       const parsed = queryString.parse(window.location.search);
       if ('overlayLayers' in parsed) {
@@ -65,9 +70,9 @@
       console.log('layer changed in selector to ' + $activeOverlayLayersStore);
     }
 </script>
-  
+
   <style>
-    
+
   #map_selection {
     padding: 4px;
     border: 1px solid #27275b;
@@ -76,7 +81,7 @@
     box-sizing: border-box;
     width: 100%;
   }
-  
+
   #map_selection h3 {
     margin: 0px;
     height: 40%;
@@ -88,7 +93,7 @@
     text-overflow: ellipsis;
     overflow: hidden !important;
   }
-  
+
   h3 {
     flex-shrink: 0;
     border : none;
@@ -98,9 +103,9 @@
     overflow-y: auto;
     border : none;
   }
-  
+
   </style>
-  
+
   <div id="map_selection"  on:click|stopPropagation="">
     {#if !isLayerListReady}
     Loading layers...
@@ -116,4 +121,3 @@
     </div>
     {/if}
   </div>
-  
