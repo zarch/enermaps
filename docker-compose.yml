@@ -48,6 +48,8 @@ services:
     ports:
       - "127.0.0.1:9000:80"
     restart: always
+    depends_on:
+      - "db"
     environment:
       UPLOAD_DIR: /upload-dir
     volumes:
