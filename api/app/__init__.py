@@ -42,7 +42,4 @@ def create_app(environment="production", testing=False):
     with app.app_context():
         if not app.testing:
             selection_layers_controller.init_datasets()
-            # overlay_layers = layers_controller.list_all_overlay_layers()
-            # file_upload = overlay_layers_controller.layer_from_db()
-            # create(file_upload)
     return app
