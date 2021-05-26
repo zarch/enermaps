@@ -4,7 +4,7 @@ from flask import redirect, send_file, url_for
 from flask_restx import Namespace, Resource, abort
 from werkzeug.datastructures import FileStorage
 
-import app.models.geofile as geofile
+from app.models import geofile as geofile
 
 api = Namespace("geofile", description="Data management related endpoints")
 
@@ -43,16 +43,24 @@ class GeoFiles(Resource):
         return redirect(url_for(".geofile_geo_files"))
 
 
-@api.route("/<string:layer_name>")
+@api.route("/<string:layer_id>")
 class GeoFile(Resource):
-    def get(self, layer_name):
+    def get(self, layer_id):
         """Get a geofile, currently shapefile as zip
         and raster as geotiff is supported."""
-        layer = geofile.load(layer_name)
+        print("get " + str(layer_id))
+
+        layer = geofile.load(layer_id)
         layer_fd, mimetype = layer.as_fd()
+        # Send the contents of a file to the client.
+        # The first argument can be a file path or a file-like object.
+        # Paths are preferred in most cases because Werkzeug can manage
+        # the file and get extra information from the path. Passing a file-like
+        # object requires that the file is opened in binary mode, and is mostly
+        # useful when building a file in memory with io.BytesIO.
         return send_file(layer_fd, mimetype=mimetype)
 
-    def delete(self, layer_name):
-        """Remove a geofile by name."""
-        geofile.load(layer_name).delete()
+    def delete(self, layer_id):
+        """Remove a geofile by id."""
+        geofile.load(layer_id).delete()
         return redirect(url_for(".geofile_geo_files"))

@@ -19,6 +19,8 @@ from flask import current_app, safe_join
 from werkzeug.datastructures import FileStorage
 
 from app.common.projection import epsg_to_wkt, proj4_from_geotiff, proj4_from_shapefile
+from app.controllers.overlay_layers_controller import layer_from_db
+from app.layers import OVERLAY_LAYERS
 
 
 class SaveException(Exception):
@@ -68,12 +70,18 @@ def create(file_upload: FileStorage):
     raise Exception("Unknown file format {}".format(file_upload.mimetype))
 
 
-def load(name):
+def load(layer_id):
     """Create a new instance of RasterLayer based on its name"""
-    if name.endswith("zip") or name.endswith("geojson"):
-        return VectorLayer(name)
-    else:
-        return RasterLayer(name)
+    # TODO base this choice on something else than the name ending
+    # (check in the layer list which type it is?)
+
+    layer = OVERLAY_LAYERS[layer_id]
+    layer_type = layer["type"]
+    # TODO add exception
+    if layer_type == "geojson" or layer_type == "vector":
+        return VectorLayer(layer_id)
+    elif layer_type == "raster":
+        return RasterLayer(layer_id)
 
 
 class Layer(ABC):
@@ -158,6 +166,7 @@ class RasterLayer(Layer):
 
     def __init__(self, name):
         self.name = name
+        self.layer_id = name
 
     @staticmethod
     def list_layers():
@@ -170,6 +179,12 @@ class RasterLayer(Layer):
 
     def _get_raster_dir(self):
         """Return the path to the directory containing the raster path"""
+        raster_dir = safe_join(get_user_upload("raster"), self.name)
+        if not os.path.exists(raster_dir):
+            file_upload = layer_from_db(self.layer_id)
+            # Creates a folder and a file in the folder
+            create(file_upload)
+        # TODO replace self.name by self.id?
         raster_dir = safe_join(get_user_upload("raster"), self.name)
         return raster_dir
 
@@ -241,7 +256,9 @@ class RasterLayer(Layer):
         raises:
             any error that can be raised by the open call.
         """
-        file_descriptor = open(self._get_raster_path(), "rb")
+        # TODO
+        raster_path = self._get_raster_path()
+        file_descriptor = open(raster_path, "rb")
         return file_descriptor, self.MIMETYPE[0]
 
 
@@ -253,7 +270,10 @@ class VectorLayer(Layer):
     TO_BE_DELETED_DIR = "vectors_to_be_deleted"
 
     def __init__(self, name):
+        # TODO for the moment the layer ID is the same as the layer name,
+        # to be changed by a real ID
         self.name = name
+        self.layer_id = name
 
     def as_fd(self):
         """For shapefile, rezip the directory and send it.
@@ -261,10 +281,14 @@ class VectorLayer(Layer):
         zipbuffer = io.BytesIO()
         vector_dir = self._get_vector_dir()
         with zipfile.ZipFile(zipbuffer, "a") as zip_file:
-            for file_name in os.listdir(vector_dir):
-                file_path = safe_join(vector_dir, file_name)
-                with open(file_path, "rb") as fd:
-                    zip_file.writestr(file_name, fd.read())
+            try:
+                for file_name in os.listdir(vector_dir):
+                    # Raises: NotFound if the resulting path would fall out of directory.
+                    file_path = safe_join(vector_dir, file_name)
+                    with open(file_path, "rb") as fd:
+                        zip_file.writestr(file_name, fd.read())
+            except Exception as e:
+                print(e)
         zipbuffer.seek(0)
         return zipbuffer, self.MIMETYPE[0]
 
@@ -280,7 +304,19 @@ class VectorLayer(Layer):
         return layer
 
     def _get_vector_dir(self):
-        return safe_join(get_user_upload("vectors"), self.name)
+        # TODO modify to create a new folder and get the data from the DB
+        # if the folder doesn't exist
+        dir_path = os.path.join(get_user_upload("vectors"), self.name)
+        # If the layer isn't already stored locally, get it from the DB and
+        # store it in the local folder
+        if not os.path.exists(dir_path):
+            # TODO for the moment the layer ID is the same as the layer name,
+            # to be changed by a real ID
+            file_upload = layer_from_db(self.layer_id)
+            # Creates a folder and a file in the folder
+            create(file_upload)
+        filename = safe_join(get_user_upload("vectors"), self.name)
+        return filename
 
     @property
     def projection(self):
@@ -349,6 +385,7 @@ class GeoJSONLayer(VectorLayer):
     MIMETYPE = ["application/json", "application/geojson", "application/geo+json"]
     DEFAULT_PROJECTION = epsg_to_wkt(4326)
 
+    @staticmethod
     def save(file_upload: FileStorage):
         """This method takes a geojson as input and present it as a raster file"""
         with TemporaryDirectory(prefix=get_tmp_upload()) as tmp_dir:
