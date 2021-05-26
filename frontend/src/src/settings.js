@@ -9,11 +9,11 @@ export const BASE_LAYER_PARAMS= {
 };
 
 export const SELECTION_LAYERS = {
-  "NUTS 0" : 0,
-  "NUTS 1" : 1,
-  "NUTS 2" : 2,
-  "NUTS 3" : 3,
-  "LAU" : 4
+  "NUTS 0" : '0',
+  "NUTS 1" : '1',
+  "NUTS 2" : '2',
+  "NUTS 3" : '3',
+  "LAU" : '4'
 };
 
 export const OVERLAY_LAYERS =
@@ -21,19 +21,19 @@ export const OVERLAY_LAYERS =
   "test_layer_01 " :
     {
       "display name" : "test layer 01",
-      "id" : 1,
+      "id" : '1',
       "type" : "raster"
     },
   "test_layer_02" :
   {
     "display name" : "test layer 02",
-    "id" : 2,
+    "id" : '2',
     "type" : "geojson"
   },
   "test_layer_03" :
   {
     "display name" : "test layer 03",
-    "id" : 3,
+    "id" : '3',
     "type" : "vector"
   },
 };

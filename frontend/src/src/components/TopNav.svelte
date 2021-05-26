@@ -41,34 +41,40 @@
     };
 
 
+    btn_add_raster_layer.onclick = async function() {
+      // Pourquoi est-ce que ça m'appelle la classe du rasterlayer et pas du geofile??
+      // -> il faut qu'il se termine par .zip ou .geofile
+
+      // Get one layer of type raster
+      let layer_to_add = OVERLAY_LAYERS["test_layer_01"];
+      const [layer, layerParameters] = await getGeofile(layer_to_add["id"]);
+      console.log("btn add raster layer clicked");
+
+      // TODO add the layer to the interface: specific to the raster layer type!
+      // if (!layerParameters.isQueryable) {
+      //     leafletLayer = toOverlayLayer(layer);
+      //     leafletLayer.name = layer;
+      //     overlayLayers.push(leafletLayer);
+      //   }
+    };
+
     btn_add_vector_layer.onclick = async function() {
       // Pourquoi est-ce que ça m'appelle la classe du rasterlayer et pas du geofile??
       // -> il faut qu'il se termine par .zip ou .geofile
-      layer = OVERLAY_LAYERS["test_layer_02"]
-      const [layer, layerParameters] = await getGeofile(layer["id"])
-      console.log("btn add vector layer clicked")
 
-      // TODO add the layer to the interface
-      if (!layerParameters.isQueryable) {
-          leafletLayer = toOverlayLayer(layer);
-          leafletLayer.name = layer;
-          overlayLayers.push(leafletLayer);
-        }
+      // Get one layer of type vector
+      let layer_to_add = OVERLAY_LAYERS["test_layer_02"];
+      const [layer, layerParameters] = await getGeofile(layer_to_add["id"]);
+      console.log("btn add vector layer clicked");
+
+      // TODO add the layer to the interface: specific to the vector layer type!
+      // if (!layerParameters.isQueryable) {
+      //     leafletLayer = toOverlayLayer(layer);
+      //     leafletLayer.name = layer;
+      //     overlayLayers.push(leafletLayer);
+      //   }
     };
 
-    btn_add_raster_layer.onclick = async function() {
-      layer = OVERLAY_LAYERS["test_layer_01"]
-      const [layer, layerParameters] = await getGeofile(layer["id"])
-      console.log("btn add raster layer clicked")
-
-      // TODO add the layer to the interface: specific to the type
-      // of layer returned
-      if (!layerParameters.isQueryable) {
-          leafletLayer = toOverlayLayer(layer);
-          leafletLayer.name = layer;
-          overlayLayers.push(leafletLayer);
-        }
-    };
 
 
   });
