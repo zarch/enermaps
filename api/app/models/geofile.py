@@ -72,16 +72,25 @@ def create(file_upload: FileStorage):
 
 def load(layer_id):
     """Create a new instance of RasterLayer based on its name"""
-    # TODO base this choice on something else than the name ending
-    # (check in the layer list which type it is?)
+    # TODO check if the layer is a selection layer in a dic containing
+    # selection layers
 
-    layer = OVERLAY_LAYERS[layer_id]
-    layer_type = layer["type"]
-    # TODO add exception
-    if layer_type == "geojson" or layer_type == "vector":
-        return VectorLayer(layer_id)
-    elif layer_type == "raster":
-        return RasterLayer(layer_id)
+    # The layer is an overlay layer part of the "default" enermaps layers
+    if layer_id in OVERLAY_LAYERS:
+        layer = OVERLAY_LAYERS[layer_id]
+        layer_type = layer["type"]
+        # TODO add exception
+        if layer_type == "geojson" or layer_type == "vector":
+            return VectorLayer(layer_id)
+        elif layer_type == "raster":
+            return RasterLayer(layer_id)
+    # The layer is a layer uploaded by a user, the creation of a raster layer
+    # or a vector layer is based on the file extension
+    else:
+        if layer_id.endswith("zip") or layer_id.endswith("geojson"):
+            return VectorLayer(layer_id)
+        else:
+            return RasterLayer(layer_id)
 
 
 class Layer(ABC):
